@@ -1,2 +1,5 @@
 id,reporterName,reporterContact,zone,landmark,serialNumber,make,model,color,keywords,notes,x,y,lat,lng,status,matchCount,createdAt,updatedAt
 found-24810254-489e-4842-af23-a17a6f0f6594,LoL,LoL,West Campus edge,21st and Speedway racks,LoL,LoL,LoL,LoL,LoL,LoL,18,30,30.2854,-97.7421,Matched lead,1,2026-03-11T02:49:31.834Z,2026-03-11T02:49:31.834Z
+found-61534574-503d-4a50-8b78-3c99271555ab,Shen Johnny,phone number,West Campus edge,21st and Speedway racks,1234567,Trek,apple,Burnt Orange,1234567,,18,30,30.2854,-97.7421,Matched lead,1,2026-03-11T06:21:46.913Z,2026-03-11T06:21:46.913Z
+found-09ebd54a-18ac-4252-8634-ea0eaa2ccb3b,Kind Person,kindperson@gmail.com,West Campus edge,21st and Speedway racks,1234567,Trek,Frontier,Orange,1234567,,18,30,30.2854,-97.7421,Matched lead,2,2026-03-11T06:31:48.119Z,2026-03-11T06:31:48.119Z
+found-b6a3a113-b7c2-477a-b4a1-475535ac9b9e,Kind user,kiduser@utexas.edu,San Antonio Garage,Garage bike room,12345678,Trek,Stars,Orange,,,68,65,30.2824,-97.7412,Matched lead,1,2026-03-11T06:53:46.817Z,2026-03-11T06:53:46.817Z

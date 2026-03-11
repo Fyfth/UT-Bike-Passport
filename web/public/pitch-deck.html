@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UT Bike Passport Pitch Deck</title>
+    <style>
+      :root {
+        --burnt: #bf5700;
+        --burnt-deep: #8f3e00;
+        --cream: #f6efe7;
+        --paper: #fffaf4;
+        --ink: #2f2118;
+        --muted: #69584a;
+        --line: rgba(91, 59, 28, 0.14);
+        --shadow: 0 24px 60px rgba(47, 33, 24, 0.16);
+        --green: #486f60;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background: #24170f;
+        color: var(--ink);
+        font-family: "Segoe UI", "Aptos", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 24px;
+      }
+
+      .hud {
+        width: min(92vw, 1280px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        color: rgba(255, 255, 255, 0.88);
+      }
+
+      .hud-brand {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .hud-brand strong {
+        font-size: 1rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .hud-brand span {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.66);
+      }
+
+      .hud-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .hud-controls button {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .hud-controls button:hover {
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .counter {
+        min-width: 64px;
+        text-align: center;
+        font-size: 0.92rem;
+        color: rgba(255, 255, 255, 0.76);
+      }
+
+      .deck {
+        position: relative;
+        width: min(92vw, 1280px);
+        aspect-ratio: 16 / 9;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: none;
+        overflow: hidden;
+        border-radius: 36px;
+        background: var(--cream);
+        box-shadow: var(--shadow);
+      }
+
+      .slide.active { display: block; }
+
+      .slide-inner {
+        height: 100%;
+        padding: 52px 56px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 28px;
+      }
+
+      .slide-accent {
+        background: linear-gradient(135deg, var(--burnt) 0%, #a74b00 100%);
+        color: white;
+      }
+
+      .slide-dark {
+        background: linear-gradient(135deg, #312117 0%, #251810 100%);
+        color: white;
+      }
+
+      .kicker {
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--burnt-deep);
+      }
+
+      .slide-accent .kicker,
+      .slide-dark .kicker { color: rgba(255, 255, 255, 0.74); }
+
+      h1, h2, h3 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      h1 { font-size: 4.8rem; }
+      h2 { font-size: 3.35rem; }
+      h3 { font-size: 1.3rem; }
+
+      p {
+        margin: 0;
+        line-height: 1.45;
+      }
+
+      .lede {
+        font-size: 1.14rem;
+        max-width: 860px;
+        color: var(--muted);
+      }
+
+      .slide-accent .lede,
+      .slide-dark .lede { color: rgba(255, 255, 255, 0.84); }
+
+      .row { display: grid; gap: 18px; }
+      .row-2 { grid-template-columns: 1.05fr 0.95fr; }
+      .row-3 { grid-template-columns: repeat(3, 1fr); }
+      .row-4 { grid-template-columns: repeat(4, 1fr); }
+
+      .card,
+      .mini-card,
+      .stack-box,
+      .step {
+        border-radius: 26px;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        padding: 20px 22px;
+      }
+
+      .slide-accent .card,
+      .slide-accent .mini-card,
+      .slide-accent .stack-box,
+      .slide-accent .step,
+      .slide-dark .card,
+      .slide-dark .mini-card,
+      .slide-dark .stack-box,
+      .slide-dark .step {
+        border-color: rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.09);
+        color: white;
+      }
+
+      .card p,
+      .mini-card p,
+      .stack-box p,
+      .step p,
+      .card li,
+      .stack-box li { color: var(--muted); }
+
+      .slide-accent .card p,
+      .slide-accent .mini-card p,
+      .slide-accent .stack-box p,
+      .slide-accent .step p,
+      .slide-accent .card li,
+      .slide-accent .stack-box li,
+      .slide-dark .card p,
+      .slide-dark .mini-card p,
+      .slide-dark .stack-box p,
+      .slide-dark .step p,
+      .slide-dark .card li,
+      .slide-dark .stack-box li {
+        color: rgba(255, 255, 255, 0.84);
+      }
+
+      .chips,
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip,
+      .pill {
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .chip {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .pill {
+        border: 1px solid rgba(191, 87, 0, 0.14);
+        background: rgba(191, 87, 0, 0.08);
+        color: var(--burnt-deep);
+      }
+
+      .slide-accent .pill,
+      .slide-dark .pill {
+        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      .stat-grid,
+      .flow-grid,
+      .stack-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .stat-grid { grid-template-columns: repeat(3, 1fr); }
+      .flow-grid { grid-template-columns: repeat(4, 1fr); }
+      .stack-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .stat-number {
+        font-size: 2.3rem;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--burnt);
+        line-height: 1;
+      }
+
+      .slide-accent .stat-number,
+      .slide-dark .stat-number { color: white; }
+
+      .label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--burnt-deep);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .slide-accent .label,
+      .slide-dark .label { color: rgba(255, 255, 255, 0.7); }
+
+      .big-callout {
+        border-radius: 30px;
+        padding: 24px 26px;
+        border: 1px solid rgba(191, 87, 0, 0.14);
+        background: linear-gradient(180deg, rgba(191, 87, 0, 0.08) 0%, rgba(191, 87, 0, 0.02) 100%);
+      }
+
+      .slide-accent .big-callout,
+      .slide-dark .big-callout {
+        border-color: rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .big-callout strong {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.9rem;
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 1.02;
+      }
+
+      .list {
+        padding-left: 18px;
+        margin: 10px 0 0;
+      }
+
+      .list li + li { margin-top: 8px; }
+
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .compare-card {
+        border-radius: 28px;
+        padding: 24px;
+        border: 1px solid var(--line);
+      }
+
+      .compare-card.old {
+        background: rgba(47, 33, 24, 0.06);
+      }
+
+      .compare-card.new {
+        background: rgba(191, 87, 0, 0.08);
+        border-color: rgba(191, 87, 0, 0.18);
+      }
+
+      .step strong {
+        display: inline-flex;
+        margin-bottom: 12px;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        background: rgba(191, 87, 0, 0.12);
+        color: var(--burnt-deep);
+      }
+
+      .slide-accent .step strong,
+      .slide-dark .step strong {
+        background: rgba(255, 255, 255, 0.12);
+        color: white;
+      }
+
+      .footer-band {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+      }
+.dot-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        border: none;
+        background: rgba(255, 255, 255, 0.26);
+        cursor: pointer;
+      }
+
+      .dot.active {
+        width: 28px;
+        background: white;
+      }
+
+      @media (max-width: 1100px) {
+        body { padding: 14px; }
+        h1 { font-size: 3.3rem; }
+        h2 { font-size: 2.55rem; }
+        .slide-inner { padding: 34px; }
+        .row-2,
+        .row-3,
+        .row-4,
+        .compare-grid,
+        .stat-grid,
+        .flow-grid,
+        .stack-grid { grid-template-columns: 1fr; }
+        .footer-band { align-items: flex-start; flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hud">
+      <div class="hud-brand">
+        <strong>UT Bike Passport</strong>
+        
+      </div>
+      <div class="hud-controls">
+        <button type="button" id="prev">Prev</button>
+        <div class="counter" id="counter">1 / 8</div>
+        <button type="button" id="next">Next</button>
+        <button type="button" id="fullscreen">Fullscreen</button>
+      </div>
+    </div>
+
+    <div class="deck">
+      <section class="slide slide-accent active">
+        <div class="slide-inner">
+          <div class="row" style="gap: 20px">
+            <span class="kicker">Build it Forward | UT Austin mobility</span>
+            <h1>UT Bike Passport</h1>
+            <p class="lede">The student workflow for bike ownership, theft reporting, and recovery.</p>
+            <div class="chips">
+              <span class="chip">Register</span>
+              <span class="chip">Report</span>
+              <span class="chip">Recover</span>
+            </div>
+          </div>
+
+          <div class="footer-band">
+            <div class="big-callout" style="max-width: 760px">
+              <strong>From fragmented pages to one recovery path.</strong>
+              <p>Students do not just lose bikes to theft. They lose recovery because the workflow is disconnected.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="row" style="gap: 16px">
+            <span class="kicker">Problem</span>
+            <h2>The system breaks at the handoff points.</h2>
+            <p class="lede">Students deal with separate pages for ownership, theft reporting, and recovery. That delay is what kills recovery.</p>
+          </div>
+
+          <div class="stat-grid">
+            <article class="mini-card">
+              <span class="label">Before theft</span>
+              <div class="stat-number">No record</div>
+              <p>Serial, photos, and proof are scattered or missing.</p>
+            </article>
+            <article class="mini-card">
+              <span class="label">During theft</span>
+              <div class="stat-number">Too slow</div>
+              <p>Students rebuild details when speed matters most.</p>
+            </article>
+            <article class="mini-card">
+              <span class="label">After recovery</span>
+              <div class="stat-number">No match</div>
+              <p>Recovered bikes can still go unclaimed without a clean owner path.</p>
+            </article>
+          </div>
+
+          <div class="footer-band">
+            <div class="big-callout" style="max-width: 840px">
+              <strong>Multiple UT pages. No end-to-end integration.</strong>
+              <p>That is why recovered bikes can still miss their owner and end up outside the student recovery loop.</p>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-dark">
+        <div class="slide-inner">
+          <div class="row" style="gap: 16px">
+            <span class="kicker">Why this matters</span>
+            <h2>UT does not need another page. It needs one student-facing workflow.</h2>
+            <p class="lede">The goal is not to replace UT systems. The goal is to connect them in a way students can actually use.</p>
+          </div>
+
+          <div class="compare-grid">
+            <article class="compare-card old">
+              <span class="label">Today</span>
+              <h3>Fragmented flow</h3>
+              <ul class="list">
+                <li>Ownership proof lives in one place or nowhere.</li>
+                <li>Missing reports happen somewhere else.</li>
+                <li>Recovered bikes still need manual routing.</li>
+              </ul>
+            </article>
+            <article class="compare-card new">
+              <span class="label">UT Bike Passport</span>
+              <h3>Connected flow</h3>
+              <ul class="list">
+                <li>Create a passport before theft.</li>
+                <li>Mark the bike missing in one tap.</li>
+                <li>Route found-bike leads back to the owner.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="pill-row">
+            <span class="pill">Better student experience</span>
+            <span class="pill">Faster recovery loop</span>
+            <span class="pill">Realistic adoption path</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="row" style="gap: 16px">
+            <span class="kicker">Solution</span>
+            <h2>One place to register, report, and recover.</h2>
+            <p class="lede">The wedge is intentionally narrow: ownership first, recovery second, campus visibility as leverage.</p>
+          </div>
+
+          <div class="row row-3">
+            <article class="step">
+              <strong>01 | Register</strong>
+              <h3>Bike passport</h3>
+              <p>Serial, make, model, photos, lock setup, and parking habits.</p>
+            </article>
+            <article class="step">
+              <strong>02 | Report</strong>
+              <h3>Missing mode</h3>
+              <p>Mark the bike missing and place it on the campus board.</p>
+            </article>
+            <article class="step">
+              <strong>03 | Recover</strong>
+              <h3>Found-bike desk</h3>
+              <p>Helpers submit leads and the likely owner gets alerted.</p>
+            </article>
+          </div>
+
+          <div class="footer-band">
+            <div class="big-callout" style="max-width: 840px">
+              <strong>This is the wedge.</strong>
+              <p>Start with the workflow students need now. Expand into campus partners later.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="row" style="gap: 16px">
+            <span class="kicker">What we built</span>
+            <h2>The web MVP already closes the loop.</h2>
+            <p class="lede">A rider creates a passport, marks the bike missing, a helper submits a found lead, and the owner sees a match alert.</p>
+          </div>
+
+          <div class="flow-grid">
+            <article class="card">
+              <span class="label">01</span>
+              <h3>Passport</h3>
+              <p>Verified ownership record before theft.</p>
+            </article>
+            <article class="card">
+              <span class="label">02</span>
+              <h3>Missing board</h3>
+              <p>Public visibility for active missing bikes.</p>
+            </article>
+            <article class="card">
+              <span class="label">03</span>
+              <h3>Found desk</h3>
+              <p>Lead intake for campus helpers and staff.</p>
+            </article>
+            <article class="card">
+              <span class="label">04</span>
+              <h3>Alerts</h3>
+              <p>Match notifications with follow-up details.</p>
+            </article>
+          </div>
+
+          <div class="footer-band">
+            <div class="big-callout" style="max-width: 860px">
+              <strong>The missing board does two jobs.</strong>
+              <p>It shows likely theft hotspots and creates pressure for campus response instead of letting incidents stay invisible.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-accent">
+        <div class="slide-inner">
+          <div class="row" style="gap: 16px">
+            <span class="kicker">Impact</span>
+            <h2>Strong enough to outlast the hackathon.</h2>
+            <p class="lede">This helps students immediately and becomes more valuable as UT partners plug into the same workflow.</p>
+          </div>
+
+          <div class="row row-3">
+            <article class="card">
+              <span class="label">For students</span>
+              <h3>Peace of mind</h3>
+              <p>Ownership proof exists before a theft happens.</p>
+            </article>
+            <article class="card">
+              <span class="label">For recovery</span>
+              <h3>Less goes unclaimed</h3>
+              <p>Found-bike leads are routed back to the likely owner faster.</p>
+            </article>
+            <article class="card">
+              <span class="label">For campus</span>
+              <h3>Better pressure</h3>
+              <p>Visible missing-bike activity highlights hotspots and gaps in response.</p>
+            </article>
+          </div>
+
+          <div class="footer-band">
+            <div class="big-callout" style="max-width: 880px">
+              <strong>Best framing: a student-friendly workflow layer around existing UT systems.</strong>
+              <p>That makes adoption realistic and fits the Build it Forward theme better than pitching a full replacement system.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="row" style="gap: 16px">
+            <span class="kicker">Tech stack</span>
+            <h2>Built fast, but with a real product architecture.</h2>
+            <p class="lede">The stack is simple enough for an MVP and strong enough to grow into a campus-ready system.</p>
+          </div>
+
+          <div class="stack-grid">
+            <article class="stack-box">
+              <span class="label">Frontend</span>
+              <h3>Next.js App Router</h3>
+              <ul class="list">
+                <li>React 19</li>
+                <li>TypeScript</li>
+                <li>Tailwind CSS v4</li>
+              </ul>
+            </article>
+            <article class="stack-box">
+              <span class="label">Map and UX</span>
+              <h3>Campus visibility</h3>
+              <ul class="list">
+                <li>Leaflet</li>
+                <li>OpenStreetMap tiles</li>
+                <li>Mobile-friendly responsive UI</li>
+              </ul>
+            </article>
+            <article class="stack-box">
+              <span class="label">Backend logic</span>
+              <h3>Recovery workflow</h3>
+              <ul class="list">
+                <li>Server Actions</li>
+                <li>Route handlers</li>
+                <li>Cookie-based session auth</li>
+              </ul>
+            </article>
+            <article class="stack-box">
+              <span class="label">Data model</span>
+              <h3>MVP storage today</h3>
+              <ul class="list">
+                <li>CSV-backed local store</li>
+                <li>Bikes, users, found posts, notifications</li>
+                <li>Prisma plus SQLite path ready next</li>
+              </ul>
+            </article>
+            <article class="stack-box">
+              <span class="label">Matching</span>
+              <h3>How alerts work</h3>
+              <ul class="list">
+                <li>Exact serial match</li>
+                <li>Make, model, color overlap</li>
+                <li>Keyword similarity</li>
+              </ul>
+            </article>
+            <article class="stack-box">
+              <span class="label">Built with Codex</span>
+              <h3>End-to-end acceleration</h3>
+              <ul class="list">
+                <li>Repo exploration and debugging</li>
+                <li>UI refactor and recovery flow fixes</li>
+                <li>Pitch deck and demo prep</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-dark">
+        <div class="slide-inner">
+          <div class="row" style="gap: 16px">
+            <span class="kicker">Data flow and roadmap</span>
+            <h2>Working loop now. Strong AI roadmap next.</h2>
+            <p class="lede">The MVP already connects register to recovery. The next step is image comparison to improve match confidence when photos are available.</p>
+          </div>
+
+          <div class="row row-4">
+            <article class="card">
+              <span class="label">01</span>
+              <h3>Create passport</h3>
+              <p>Ownership record is saved before theft.</p>
+            </article>
+            <article class="card">
+              <span class="label">02</span>
+              <h3>Mark missing</h3>
+              <p>Bike appears on the public board.</p>
+            </article>
+            <article class="card">
+              <span class="label">03</span>
+              <h3>Submit found lead</h3>
+              <p>Campus helper enters details at the desk.</p>
+            </article>
+            <article class="card">
+              <span class="label">04</span>
+              <h3>Notify owner</h3>
+              <p>System explains why the match looks likely.</p>
+            </article>
+          </div>
+
+          <div class="footer-band">
+            <div class="big-callout" style="max-width: 920px">
+              <strong>Next: OpenAI image comparison.</strong>
+              <p>Compare passport photos to found-bike photos to raise confidence and reduce false positives.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="dot-nav" id="dots"></div>
+
+    <script>
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const counter = document.getElementById('counter');
+      const dots = document.getElementById('dots');
+      let index = 0;
+
+      slides.forEach((_, slideIndex) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot';
+        dot.type = 'button';
+        dot.setAttribute('aria-label', `Go to slide ${slideIndex + 1}`);
+        dot.addEventListener('click', () => showSlide(slideIndex));
+        dots.appendChild(dot);
+      });
+
+      function syncUi() {
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle('active', slideIndex === index);
+        });
+
+        Array.from(dots.children).forEach((dot, dotIndex) => {
+          dot.classList.toggle('active', dotIndex === index);
+        });
+
+        counter.textContent = `${index + 1} / ${slides.length}`;
+      }
+
+      function showSlide(nextIndex) {
+        index = (nextIndex + slides.length) % slides.length;
+        syncUi();
+      }
+
+      document.getElementById('prev').addEventListener('click', () => showSlide(index - 1));
+      document.getElementById('next').addEventListener('click', () => showSlide(index + 1));
+      document.getElementById('fullscreen').addEventListener('click', async () => {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        } else {
+          await document.exitFullscreen();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+          event.preventDefault();
+          showSlide(index + 1);
+        }
+
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+          event.preventDefault();
+          showSlide(index - 1);
+        }
+      });
+
+      syncUi();
+    </script>
+  </body>
+</html>
