@@ -87,6 +87,9 @@ export default async function FoundPage({ searchParams }: FoundPageProps) {
                   {lead.keywords ? <p>Keywords: {lead.keywords}</p> : null}
                   <p>Matches created: {lead.matchCount}</p>
                 </div>
+                <Link href={`/found/${lead.id}`} className="mt-4 inline-block text-sm font-bold text-[var(--accent-strong)]">
+                  View details
+                </Link>
               </article>
             ))
           ) : (

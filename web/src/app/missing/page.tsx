@@ -17,43 +17,37 @@ export default async function MissingBoardPage() {
 
   return (
     <div className="space-y-8 pb-10">
-      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="card-surface rounded-[36px] p-8 md:p-10">
-          <StatusPill label="Map-first missing board" tone="alert" />
-          <h1 className="mt-5 max-w-3xl font-display text-5xl font-black leading-[0.95] text-[var(--foreground)] md:text-6xl">
-            The missing board is now centered on a free interactive map.
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="card-surface rounded-[36px] border-t-4 border-[var(--accent)] p-8 md:p-10">
+          <StatusPill label="UT Austin missing board" tone="alert" />
+          <h1 className="mt-5 max-w-4xl font-display text-5xl font-black leading-[0.95] text-[var(--foreground)] md:text-6xl">
+            Track live missing-bike activity across campus.
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-8 text-[var(--muted-strong)]">
-            Riders can click markers, inspect incident cards, and jump into linked passports when a
-            report is tied to a known bike record. Found-bike leads can push these cards into a possible-lead state.
+          <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--muted-strong)]">
+            Open the map, inspect each hotspot, and jump into linked passports when a report belongs to a rider already in the system.
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-          <article className="card-surface rounded-[30px] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">What this page does</p>
-            <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-              It shifts the product from a personal record system into a campus visibility tool. This is
-              where people see patterns, not just their own bike.
-            </p>
-          </article>
-          <article className="card-surface rounded-[30px] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">Report or recover</p>
-            <div className="mt-4 flex flex-col gap-3">
-              <Link href="/sign-in" className="rounded-full bg-[var(--accent)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[var(--accent-strong)]">
-                Sign in
-              </Link>
-              <Link href="/found" className="rounded-full border border-[rgba(53,104,89,0.18)] bg-[rgba(53,104,89,0.08)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-[var(--success-strong)] transition hover:bg-[rgba(53,104,89,0.12)]">
-                Create found post
-              </Link>
+        <aside className="card-surface rounded-[36px] p-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent-strong)]">Campus snapshot</p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+            <div className="rounded-[24px] border border-[var(--line)] bg-[var(--card-strong)] p-4">
+              <p className="text-4xl font-black text-[var(--foreground)]">{String(reports.length).padStart(2, "0")}</p>
+              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--muted-strong)]">Active reports</p>
             </div>
-          </article>
-          <article className="card-surface rounded-[30px] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">Free map stack</p>
-            <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-              The live map now uses Leaflet with OpenStreetMap tiles, so there is no Google billing and no API key needed.
-            </p>
-          </article>
-        </div>
+            <div className="rounded-[24px] border border-[var(--line)] bg-[var(--card-strong)] p-4">
+              <p className="text-4xl font-black text-[var(--foreground)]">{String(linkedPassports.length).padStart(2, "0")}</p>
+              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--muted-strong)]">Passport-linked cases</p>
+            </div>
+          </div>
+          <div className="mt-6 flex flex-col gap-3">
+            <Link href="/sign-in" className="rounded-full bg-[var(--accent)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[var(--accent-strong)]">
+              Sign in
+            </Link>
+            <Link href="/found" className="rounded-full border border-[var(--line)] bg-[var(--card)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-[var(--foreground)] transition hover:border-[rgba(191,87,0,0.18)]">
+              Create found post
+            </Link>
+          </div>
+        </aside>
       </section>
 
       {linkedPassports.length ? (

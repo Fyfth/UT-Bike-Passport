@@ -131,14 +131,20 @@ export default async function BikeDetailPage({ params, searchParams }: BikeDetai
             {bikeNotifications.length ? (
               <div className="mt-4 space-y-3">
                 {bikeNotifications.map((notification) => (
-                  <div key={notification.id} className="rounded-[22px] border border-[rgba(53,104,89,0.16)] bg-[rgba(53,104,89,0.08)] p-4">
+                  <Link
+                    key={notification.id}
+                    href={`/found/${notification.foundPostId}/open`}
+                    prefetch={false}
+                    className="block rounded-[22px] border border-[rgba(53,104,89,0.16)] bg-[rgba(53,104,89,0.08)] p-4 transition hover:bg-[rgba(53,104,89,0.12)] hover:shadow-[0_18px_45px_rgba(53,104,89,0.12)]"
+                  >
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm font-bold text-[var(--foreground)]">{notification.title}</p>
                       <StatusPill label={notification.status} tone={notification.status === "Unread" ? "success" : "quiet"} />
                     </div>
                     <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{notification.message}</p>
                     <p className="mt-2 text-sm font-semibold text-[var(--foreground)]">{notification.reason}</p>
-                  </div>
+                    <p className="mt-3 text-sm font-bold text-[var(--accent-strong)]">Open found post</p>
+                  </Link>
                 ))}
               </div>
             ) : (
@@ -152,3 +158,4 @@ export default async function BikeDetailPage({ params, searchParams }: BikeDetai
     </div>
   );
 }
+

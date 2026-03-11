@@ -1,4 +1,4 @@
-﻿import type { BikeRecord, FoundPostRecord, MissingReportRecord, NotificationRecord } from "@/lib/store";
+import type { BikeRecord, FoundPostRecord, MissingReportRecord, NotificationRecord } from "@/lib/store";
 
 type MatchResult = {
   bike: BikeRecord;

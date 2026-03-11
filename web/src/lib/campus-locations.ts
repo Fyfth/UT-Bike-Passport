@@ -1,4 +1,4 @@
-﻿export type CampusLocation = {
+export type CampusLocation = {
   id: string;
   zone: string;
   landmark: string;

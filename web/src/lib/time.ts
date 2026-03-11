@@ -1,4 +1,4 @@
-﻿export function formatDateTimeLabel(value: Date) {
+export function formatDateTimeLabel(value: Date) {
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",

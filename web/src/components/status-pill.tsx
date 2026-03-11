@@ -4,11 +4,11 @@ type StatusPillProps = {
 };
 
 const toneClasses: Record<NonNullable<StatusPillProps["tone"]>, string> = {
-  neutral: "bg-[rgba(29,22,18,0.08)] text-[var(--foreground)]",
-  accent: "bg-[rgba(191,87,0,0.12)] text-[var(--accent-strong)]",
-  success: "bg-[rgba(70,117,93,0.14)] text-[var(--success-strong)]",
-  alert: "bg-[rgba(201,75,50,0.14)] text-[var(--alert-strong)]",
-  quiet: "bg-[rgba(255,255,255,0.65)] text-[var(--muted-strong)]",
+  neutral: "border border-[var(--line)] bg-[var(--card-strong)] text-[var(--foreground)]",
+  accent: "border border-[rgba(191,87,0,0.18)] bg-[rgba(191,87,0,0.1)] text-[var(--accent-strong)]",
+  success: "border border-[rgba(78,124,106,0.18)] bg-[rgba(78,124,106,0.1)] text-[var(--success-strong)]",
+  alert: "border border-[rgba(196,91,69,0.18)] bg-[rgba(196,91,69,0.1)] text-[var(--alert-strong)]",
+  quiet: "border border-[var(--line)] bg-[rgba(255,255,255,0.7)] text-[var(--muted-strong)]",
 };
 
 export function StatusPill({ label, tone = "neutral" }: StatusPillProps) {

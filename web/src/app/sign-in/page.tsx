@@ -24,13 +24,13 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 
     return (
       <div className="space-y-8 pb-10">
-        <section className="card-surface rounded-[34px] p-8 md:p-10">
+        <section className="card-surface rounded-[36px] border-t-4 border-[var(--accent)] p-8 md:p-10">
           <StatusPill label="Signed in" tone="success" />
-          <h1 className="mt-5 max-w-3xl font-display text-5xl font-black leading-[0.95] text-[var(--foreground)] md:text-6xl">
-            {currentUser.name}, you are ready to create, report, and recover bike passports.
+          <h1 className="mt-5 max-w-4xl font-display text-5xl font-black leading-[0.95] text-[var(--foreground)] md:text-6xl">
+            {currentUser.name}, this is your UT bike recovery dashboard.
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-8 text-[var(--muted-strong)]">
-            This is now the account hub: your bikes, your missing reports, and any found-bike leads the matching system has generated for you.
+          <p className="mt-4 max-w-3xl text-base leading-8 text-[var(--muted-strong)]">
+            Manage your passports, review recovery leads, and jump straight to the missing board or found-bike desk.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
@@ -41,13 +41,13 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             </Link>
             <Link
               href="/missing"
-              className="rounded-full border border-[var(--line)] bg-[rgba(255,255,255,0.75)] px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition hover:bg-white"
+              className="rounded-full border border-[var(--line)] bg-[var(--card)] px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition hover:border-[rgba(191,87,0,0.18)]"
             >
               Open missing board
             </Link>
             <Link
               href="/found"
-              className="rounded-full border border-[var(--line)] bg-[rgba(255,255,255,0.75)] px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition hover:bg-white"
+              className="rounded-full border border-[var(--line)] bg-[var(--card)] px-6 py-4 text-center text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)] transition hover:border-[rgba(191,87,0,0.18)]"
             >
               Found-bike desk
             </Link>
@@ -75,15 +75,20 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
                   </div>
                   <p className="mt-4 text-sm leading-7 text-[var(--muted)]">{notification.message}</p>
                   <p className="mt-3 text-sm font-semibold text-[var(--foreground)]">Why it matched: {notification.reason}</p>
-                  <Link href={`/bikes/${notification.bikeSlug}`} className="mt-4 inline-block text-sm font-bold text-[var(--accent-strong)]">
-                    Open {notification.bikeNickname}
-                  </Link>
+                  <div className="mt-4 flex flex-wrap items-center gap-4">
+                    <Link href={`/found/${notification.foundPostId}/open`} prefetch={false} className="text-sm font-bold text-[var(--accent-strong)]">
+                      Open found post
+                    </Link>
+                    <Link href={`/bikes/${notification.bikeSlug}`} className="text-sm font-bold text-[var(--success-strong)]">
+                      Open {notification.bikeNickname}
+                    </Link>
+                  </div>
                 </article>
               ))}
             </div>
           ) : (
             <article className="card-surface rounded-[28px] p-5 text-sm leading-7 text-[var(--muted)]">
-              No leads yet. Once a found-bike post overlaps with one of your missing passports, the alert will show up here.
+              No active recovery leads yet. When a found-bike post overlaps with one of your missing passports, it will appear here.
             </article>
           )}
         </section>
@@ -106,16 +111,25 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
   }
 
   return (
-    <div className="grid gap-6 pb-10 lg:grid-cols-[1fr_0.95fr]">
-      <section className="card-surface rounded-[34px] p-8 md:p-10">
-        <StatusPill label="Step 1: user sign in" tone="accent" />
-        <h1 className="mt-5 max-w-3xl font-display text-5xl font-black leading-[0.95] text-[var(--foreground)] md:text-6xl">
-          Create your user profile before you create your bike passport.
+    <div className="grid gap-6 pb-10 lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="rounded-[36px] bg-[var(--accent)] p-8 text-white md:p-10">
+        <StatusPill label="Start here" tone="quiet" />
+        <h1 className="mt-5 max-w-3xl font-display text-5xl font-black leading-[0.95] md:text-6xl">
+          Build your UT Austin bike record before you need it.
         </h1>
-        <p className="mt-4 max-w-2xl text-base leading-8 text-[var(--muted-strong)]">
-          For this MVP, sign-in is lightweight: name and email create or reopen your local account so
-          every bike passport can be tied to a real user record.
+        <p className="mt-4 max-w-2xl text-base leading-8 text-[rgba(255,255,255,0.84)]">
+          Sign in with your name and email, then create a passport that stores the details riders and campus helpers need when a bike goes missing.
         </p>
+        <ul className="mt-8 space-y-3 text-sm font-semibold uppercase tracking-[0.16em] text-[rgba(255,255,255,0.76)]">
+          <li>Serial number, make, model, and lock setup</li>
+          <li>Fast reporting to the missing board</li>
+          <li>Found-bike alerts routed back to you</li>
+        </ul>
+      </section>
+
+      <section className="card-surface rounded-[36px] p-8 md:p-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent-strong)]">Sign in</p>
+        <h2 className="mt-3 font-display text-4xl font-black text-[var(--foreground)]">Create or reopen your rider profile.</h2>
         {params.error === "missing-fields" ? (
           <div className="mt-6 rounded-[24px] border border-[rgba(178,73,51,0.22)] bg-[rgba(178,73,51,0.08)] px-5 py-4 text-sm font-semibold text-[var(--alert-strong)]">
             Enter both your name and your email to continue.
@@ -127,8 +141,8 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             <input
               name="name"
               required
-              placeholder="Maya Chen"
-              className="mt-2 w-full rounded-[18px] border border-[var(--line)] bg-[rgba(255,255,255,0.82)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition focus:border-[var(--accent-soft)] focus:bg-white"
+              placeholder="Johnny Shen"
+              className="mt-2 w-full rounded-[18px] border border-[var(--line)] bg-[var(--card-strong)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition focus:border-[var(--accent-soft)]"
             />
           </div>
           <div>
@@ -137,8 +151,8 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
               name="email"
               required
               type="email"
-              placeholder="maya@utexas.edu"
-              className="mt-2 w-full rounded-[18px] border border-[var(--line)] bg-[rgba(255,255,255,0.82)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition focus:border-[var(--accent-soft)] focus:bg-white"
+              placeholder="johnny@utexas.edu"
+              className="mt-2 w-full rounded-[18px] border border-[var(--line)] bg-[var(--card-strong)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition focus:border-[var(--accent-soft)]"
             />
           </div>
           <button
@@ -148,46 +162,15 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             Sign in and continue
           </button>
         </form>
+        <div className="mt-6 flex flex-wrap items-center gap-4 text-sm font-semibold text-[var(--muted-strong)]">
+          <Link href="/missing" className="text-[var(--accent-strong)]">
+            Browse the missing board
+          </Link>
+          <Link href="/found" className="text-[var(--accent-strong)]">
+            Open the found-bike desk
+          </Link>
+        </div>
       </section>
-
-      <aside className="space-y-6">
-        <article className="card-surface rounded-[32px] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">Why sign in first</p>
-          <div className="mt-4 space-y-3">
-            <div className="rounded-[22px] bg-[rgba(35,22,15,0.05)] p-4 text-sm leading-6 text-[var(--muted)]">
-              The bike gets associated to a user account immediately.
-            </div>
-            <div className="rounded-[22px] bg-[rgba(35,22,15,0.05)] p-4 text-sm leading-6 text-[var(--muted)]">
-              Returning riders can see all passports already tied to their email.
-            </div>
-            <div className="rounded-[22px] bg-[rgba(35,22,15,0.05)] p-4 text-sm leading-6 text-[var(--muted)]">
-              Notifications for found-bike matches have a user to land on.
-            </div>
-          </div>
-        </article>
-        <article className="card-surface rounded-[32px] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">CSV files</p>
-          <div className="mt-4 space-y-3 text-sm leading-6 text-[var(--muted)]">
-            <p><code>web/data/users.csv</code> stores signed-in users.</p>
-            <p><code>web/data/bikes.csv</code> stores bike passports linked by <code>ownerId</code>.</p>
-            <p><code>web/data/notifications.csv</code> stores found-bike alerts.</p>
-          </div>
-        </article>
-        <article className="card-surface rounded-[32px] p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">You can still browse</p>
-          <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-            The missing-board map and found-bike desk stay open to everyone, but creating a passport now requires sign-in.
-          </p>
-          <div className="mt-5 flex flex-col gap-3">
-            <Link href="/missing" className="text-sm font-bold text-[var(--accent-strong)]">
-              View the missing board
-            </Link>
-            <Link href="/found" className="text-sm font-bold text-[var(--accent-strong)]">
-              Open the found-bike desk
-            </Link>
-          </div>
-        </article>
-      </aside>
     </div>
   );
 }

@@ -86,9 +86,13 @@ export function FoundPostForm({ action, locations }: FoundPostFormProps) {
           <textarea name="notes" rows={4} placeholder="Anything else that could help the rider verify this bike." className="mt-2 w-full rounded-[18px] border border-[var(--line)] bg-[rgba(255,255,255,0.82)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition focus:border-[var(--accent-soft)] focus:bg-white" />
         </div>
       </div>
-      <button type="submit" className="mt-6 w-full rounded-full border border-[rgba(53,104,89,0.26)] bg-[var(--success)] px-6 py-4 text-sm font-bold uppercase tracking-[0.18em] text-white shadow-[0_18px_50px_rgba(53,104,89,0.22)] transition hover:bg-[var(--success-strong)] hover:shadow-[0_22px_60px_rgba(53,104,89,0.28)]">
+      <button
+        type="submit"
+        className="mt-6 w-full rounded-full border border-[rgba(141,63,0,0.28)] bg-[var(--accent)] px-6 py-4 text-sm font-bold uppercase tracking-[0.18em] text-white shadow-[0_18px_50px_rgba(191,87,0,0.24)] transition hover:bg-[var(--accent-strong)] hover:shadow-[0_22px_60px_rgba(141,63,0,0.3)]"
+      >
         Create found post
       </button>
     </form>
   );
 }
+
