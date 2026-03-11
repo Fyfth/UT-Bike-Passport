@@ -11,7 +11,9 @@
   --accent: #bf5700;
   --accent-soft: #f3c28b;
   --accent-strong: #8d3f00;
+  --success: #4b7f6f;
   --success-strong: #356859;
+  --alert: #c45b45;
   --alert-strong: #b24933;
   --shadow: 0 20px 80px rgba(59, 36, 19, 0.1);
 }

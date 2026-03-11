@@ -20,6 +20,13 @@
       "email": "priya@utexas.edu",
       "createdAt": "2026-02-27T21:12:00.000Z",
       "updatedAt": "2026-02-27T21:12:00.000Z"
+    },
+    {
+      "id": "owner-eb6401cb-1339-4ff9-b584-f928d1d7e344",
+      "name": "Johnny",
+      "email": "johnnyshen0630@gmail.com",
+      "createdAt": "2026-03-11T01:24:05.011Z",
+      "updatedAt": "2026-03-11T01:37:37.344Z"
     }
   ],
   "passports": [
@@ -95,6 +102,52 @@
       "heroTone": "steel",
       "createdAt": "2026-02-27T21:12:00.000Z",
       "updatedAt": "2026-02-27T21:12:00.000Z"
+    },
+    {
+      "id": "passport-88235d09-ced5-43d6-85c0-714eb7178ede",
+      "slug": "lol",
+      "ownerId": "owner-eb6401cb-1339-4ff9-b584-f928d1d7e344",
+      "nickname": "LOL",
+      "make": "LOL",
+      "model": "LOL",
+      "color": "LOL",
+      "frameSize": "LOL",
+      "serialNumber": "LOL",
+      "lockType": "U-lock",
+      "commonParking": "PCL racks",
+      "purchaseDate": "LOL",
+      "purchaseSource": "LOL",
+      "receiptReference": "LOL",
+      "photoSummary": "LOL",
+      "receiptStatus": "Uploaded",
+      "status": "Protected",
+      "note": "wjeborgj",
+      "heroTone": "burnt",
+      "createdAt": "2026-03-11T01:24:05.011Z",
+      "updatedAt": "2026-03-11T01:24:05.011Z"
+    },
+    {
+      "id": "passport-f56dfced-7b31-4fc3-8f45-609bdb8f405f",
+      "slug": "lol-2",
+      "ownerId": "owner-eb6401cb-1339-4ff9-b584-f928d1d7e344",
+      "nickname": "lol",
+      "make": "lol",
+      "model": "lol",
+      "color": "lol",
+      "frameSize": "lol",
+      "serialNumber": "lol",
+      "lockType": "U-lock",
+      "commonParking": "PCL racks",
+      "purchaseDate": "lol",
+      "purchaseSource": "lol",
+      "receiptReference": "lol",
+      "photoSummary": "lol",
+      "receiptStatus": "Uploaded",
+      "status": "Protected",
+      "note": "No distinctive notes yet.",
+      "heroTone": "burnt",
+      "createdAt": "2026-03-11T01:37:37.344Z",
+      "updatedAt": "2026-03-11T01:37:37.344Z"
     }
   ],
   "recoveredBikes": [

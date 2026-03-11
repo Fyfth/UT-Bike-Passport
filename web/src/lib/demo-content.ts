@@ -1,77 +1,48 @@
 export const problemSignals = [
   {
-    title: "Fear changes behavior",
-    detail:
-      "Students want to bike, but fear of theft changes where they park, when they ride, and whether they bring a bike to campus at all.",
+    title: "Users need identity first",
+    detail: "A bike passport is much more trustworthy once it belongs to a signed-in user instead of an anonymous form session.",
   },
   {
-    title: "Reports feel fragmented",
-    detail:
-      "Ownership proof, police reporting, and community awareness live in different places, so the first hour after a theft feels chaotic.",
+    title: "The map needs to be central",
+    detail: "Students care where missing-bike activity is happening right now, so the map has to be a first-class part of the product.",
   },
   {
-    title: "Recovered bikes still go cold",
-    detail:
-      "Even when bikes are found, weak ownership records make it harder to reconnect them with the right rider before they disappear into a dead-end workflow.",
+    title: "Recovery needs a public lead desk",
+    detail: "A missing report only helps when someone on campus can post what they found and route that clue back to the owner.",
   },
 ];
 
 export const registrationSignals = [
   {
-    title: "Identity",
-    detail: "Serial, make, model, and color create the cleanest recovery signal.",
+    title: "Sign in",
+    detail: "Create or reopen your user account first so every bike belongs to a real owner profile.",
   },
   {
-    title: "Proof",
-    detail: "Receipts, purchase notes, and photo summaries prove ownership before the stressful part starts.",
+    title: "Create the passport",
+    detail: "Save the bike details once so ownership proof and parking habits stay attached to you.",
   },
   {
-    title: "Context",
-    detail: "Lock setup and common parking habits help recovery teams judge whether a listing looks plausible.",
-  },
-];
-
-export const incidents = [
-  {
-    id: "inc-01",
-    zone: "West Campus edge",
-    timestamp: "Tonight, 8:10 PM",
-    bikeType: "Hybrid commuter",
-    status: "Open",
-    note: "Reported near the outer racks by 21st and Speedway.",
-  },
-  {
-    id: "inc-02",
-    zone: "Dobie garage corridor",
-    timestamp: "Today, 2:35 PM",
-    bikeType: "Road bike",
-    status: "Escalated",
-    note: "Owner uploaded passport, receipt, and last-seen details within seven minutes.",
-  },
-  {
-    id: "inc-03",
-    zone: "San Antonio Garage",
-    timestamp: "Yesterday, 9:05 AM",
-    bikeType: "Cargo e-bike",
-    status: "Recovered lead",
-    note: "A recovered-bike intake created a possible match before the auction pipeline.",
+    title: "Report and recover",
+    detail: "Use the missing board and found-bike desk to surface campus leads and notify the owner.",
   },
 ];
 
-export const zoneSummaries = [
+export const mapLegend = [
   {
-    name: "West Campus edge",
-    risk: "High watch",
-    guidance: "Push riders toward crowded racks or indoor storage after dusk.",
+    label: "Fresh report",
+    description: "Newly reported missing-bike activity that should grab the most attention.",
   },
   {
-    name: "Dobie corridor",
-    risk: "Active reports",
-    guidance: "Good pilot location for rapid reporting and notification handoff.",
+    label: "Community search",
+    description: "Reports where students are actively sharing sightings or location clues.",
   },
   {
-    name: "San Antonio Garage",
-    risk: "Recovery hotspot",
-    guidance: "Good candidate for recovered-bike intake and owner matching.",
+    label: "Possible lead",
+    description: "Reports with a found-bike clue or matching lead attached.",
+  },
+  {
+    label: "Passport on file",
+    description: "A missing-bike report that links back to a known passport record.",
   },
 ];

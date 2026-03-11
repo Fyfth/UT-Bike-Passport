@@ -1,22 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatusPill } from "@/components/status-pill";
+import { getNotificationsForUser } from "@/lib/notifications";
 import { getBikePassportBySlug } from "@/lib/passports";
+import { getCurrentUser } from "@/lib/store";
 
 type BikeDetailPageProps = {
   params: Promise<{
     bikeId: string;
   }>;
+  searchParams?: Promise<{
+    updated?: string;
+  }>;
 };
-
-function DetailBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-[22px] border border-[var(--line)] bg-[rgba(255,255,255,0.72)] p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">{label}</p>
-      <p className="mt-3 text-sm leading-6 text-[var(--foreground)]">{value}</p>
-    </div>
-  );
-}
 
 const heroClasses = {
   burnt: "from-[rgba(191,87,0,0.22)] via-[rgba(255,248,239,0.82)] to-[rgba(255,255,255,0.6)]",
@@ -24,143 +20,135 @@ const heroClasses = {
   steel: "from-[rgba(104,126,136,0.22)] via-[rgba(255,248,239,0.82)] to-[rgba(255,255,255,0.6)]",
 };
 
-export default async function BikeDetailPage({ params }: BikeDetailPageProps) {
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start justify-between gap-4 border-b border-[rgba(35,22,15,0.08)] py-3 last:border-b-0">
+      <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">{label}</span>
+      <span className="max-w-[60%] text-right text-sm leading-6 text-[var(--foreground)]">{value}</span>
+    </div>
+  );
+}
+
+export default async function BikeDetailPage({ params, searchParams }: BikeDetailPageProps) {
   const { bikeId } = await params;
-  const passport = await getBikePassportBySlug(bikeId);
+  const query = (await searchParams) ?? {};
+  const [passport, currentUser] = await Promise.all([getBikePassportBySlug(bikeId), getCurrentUser()]);
 
   if (!passport) {
     notFound();
   }
 
+  const isOwner = currentUser?.id === passport.ownerId;
+  const notifications = isOwner && currentUser ? await getNotificationsForUser(currentUser.id) : [];
+  const bikeNotifications = notifications.filter((notification) => notification.bikeSlug === passport.id);
   const tone = passport.status === "Stolen" ? "alert" : passport.status === "Recovered" ? "success" : "accent";
 
   return (
     <div className="space-y-8 pb-10">
-      <section className={`card-surface rounded-[36px] bg-gradient-to-br ${heroClasses[passport.heroTone]} p-8 md:p-10`}>
-        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-          <div>
-            <Link href="/dashboard" className="text-sm font-bold text-[var(--accent-strong)]">
-              Back to dashboard
-            </Link>
-            <div className="mt-5 flex items-center gap-3">
-              <StatusPill label={passport.status} tone={tone} />
-              <StatusPill
-                label={passport.receiptStatus === "Uploaded" ? "receipt ready" : "receipt pending"}
-                tone={passport.receiptStatus === "Uploaded" ? "success" : "quiet"}
-              />
-            </div>
-            <h1 className="mt-5 font-display text-5xl font-black leading-[0.95] text-[var(--foreground)] md:text-6xl">
-              {passport.nickname}
-            </h1>
-            <p className="mt-4 text-base leading-8 text-[var(--muted-strong)]">
-              {passport.make} {passport.model} · {passport.color} · {passport.frameSize} frame
-            </p>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted)]">{passport.note}</p>
-          </div>
-          <div className="rounded-[26px] border border-[var(--line)] bg-[rgba(255,255,255,0.76)] p-5 md:max-w-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">
-              Passport actions
-            </p>
-            <div className="mt-4 flex flex-col gap-3">
-              <Link
-                href="/bikes/new"
-                className="rounded-full bg-[var(--accent)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[var(--accent-strong)]"
-              >
-                Create another passport
-              </Link>
-              <Link
-                href="/recovery"
-                className="rounded-full border border-[var(--line)] bg-[rgba(255,255,255,0.8)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-[var(--foreground)] transition hover:bg-white"
-              >
-                View recovery board
-              </Link>
-            </div>
-          </div>
+      {query.updated === "missing" ? (
+        <div className="rounded-[24px] border border-[rgba(178,73,51,0.22)] bg-[rgba(178,73,51,0.08)] px-5 py-4 text-sm font-semibold text-[var(--alert-strong)]">
+          Missing report sent. Your bike is now on the missing board and eligible for found-bike matching.
         </div>
-      </section>
+      ) : null}
 
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <section className="space-y-6">
-          <article className="card-surface rounded-[32px] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">
-              Identity snapshot
-            </p>
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <DetailBlock label="Owner" value={passport.ownerName} />
-              <DetailBlock label="Serial number" value={passport.serialNumber} />
-              <DetailBlock label="Purchase source" value={passport.purchaseSource ?? "Not added yet"} />
-              <DetailBlock label="Purchase date" value={passport.purchaseDate ?? "Not added yet"} />
-              <DetailBlock label="Lock setup" value={passport.lockType} />
-              <DetailBlock label="Preferred parking" value={passport.commonParking.join(", ")} />
+      <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <article className={`card-surface rounded-[36px] bg-gradient-to-br ${heroClasses[passport.heroTone]} p-8 md:p-10`}>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">
+                {isOwner ? "Your passport" : "Passport on file"}
+              </p>
+              <h1 className="mt-3 font-display text-5xl font-black text-[var(--foreground)] md:text-6xl">
+                {passport.nickname}
+              </h1>
             </div>
-          </article>
+            <StatusPill label={passport.status} tone={tone} />
+          </div>
 
-          <article className="card-surface rounded-[32px] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">
-              Proof of ownership
-            </p>
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <DetailBlock label="Receipt reference" value={passport.receiptReference ?? "No receipt note saved yet"} />
-              <DetailBlock label="Photo summary" value={passport.photoSummary ?? "No photo summary saved yet"} />
+          <div className="mt-8 rounded-[30px] border border-[var(--line)] bg-[rgba(255,248,239,0.88)] p-6 shadow-[0_20px_60px_rgba(53,38,22,0.08)]">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">Owner</p>
+                <p className="mt-2 font-display text-3xl font-black text-[var(--foreground)]">{passport.ownerName}</p>
+              </div>
+              <StatusPill label={passport.receiptStatus === "Uploaded" ? "proof saved" : "proof pending"} tone={passport.receiptStatus === "Uploaded" ? "success" : "quiet"} />
             </div>
-          </article>
-
-          <article className="card-surface rounded-[32px] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">
-              Stolen-bike mode preview
-            </p>
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <DetailBlock label="Last seen" value={passport.lastSeen ?? "Not reported yet"} />
-              <DetailBlock label="Report created" value={passport.reportedAt ?? "No report on file"} />
+            <div className="mt-6">
+              <DetailRow label="Bike" value={`${passport.make} ${passport.model}`} />
+              <DetailRow label="Color" value={passport.color} />
+              <DetailRow label="Frame" value={passport.frameSize} />
+              <DetailRow label="Serial" value={passport.serialNumber} />
+              <DetailRow label="Lock" value={passport.lockType} />
+              <DetailRow label="Parking" value={passport.commonParking.join(", ")} />
+              <DetailRow label="Last seen" value={passport.lastSeen || "No missing report on file"} />
             </div>
-            <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-              This will become the future reporting engine: the app should turn this saved record
-              into a clean summary for UTPD or APD plus a shareable alert card.
-            </p>
-          </article>
-        </section>
+            <div className="mt-5 rounded-[22px] bg-[rgba(35,22,15,0.05)] p-4 text-sm leading-7 text-[var(--muted)]">
+              {passport.note}
+            </div>
+          </div>
+        </article>
 
         <aside className="space-y-6">
           <article className="card-surface rounded-[32px] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-strong)]">
-              Recovery signals
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-black text-[var(--foreground)]">
-              Potential matches
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">Action center</p>
+            <h2 className="mt-3 font-display text-3xl font-black text-[var(--foreground)]">
+              This passport now supports both missing reports and found-bike recovery alerts.
             </h2>
-            <div className="mt-5 space-y-4">
-              {passport.matches.length ? (
-                passport.matches.map((match) => {
-                  const candidateTone =
-                    match.confidence === "High"
-                      ? "success"
-                      : match.confidence === "Medium"
-                        ? "accent"
-                        : "quiet";
-
-                  return (
-                    <article key={match.id} className="rounded-[24px] border border-[var(--line)] bg-[rgba(255,255,255,0.72)] p-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="text-sm font-bold text-[var(--foreground)]">{match.title}</p>
-                          <p className="mt-1 text-sm text-[var(--muted)]">{match.zone} · {match.foundAt}</p>
-                        </div>
-                        <StatusPill label={match.confidence} tone={candidateTone} />
-                      </div>
-                      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{match.reason}</p>
-                    </article>
-                  );
-                })
-              ) : (
-                <p className="rounded-[24px] border border-dashed border-[var(--line)] p-4 text-sm leading-6 text-[var(--muted)]">
-                  No recovery leads yet. When new recovered-bike listings are added, this is where
-                  likely matches appear.
-                </p>
-              )}
+            <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
+              Start from your passport, put the bike on the missing board when needed, and come back here when the app finds a likely lead.
+            </p>
+            <div className="mt-6 flex flex-col gap-3">
+              <Link href="/missing" className="rounded-full bg-[var(--accent)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[var(--accent-strong)]">
+                Open missing-board map
+              </Link>
+              {isOwner ? (
+                <Link href={`/bikes/${passport.id}/report-missing`} className="rounded-full border border-[rgba(178,73,51,0.2)] bg-[rgba(178,73,51,0.08)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-[var(--alert-strong)] transition hover:bg-[rgba(178,73,51,0.12)]">
+                  {passport.status === "Stolen" ? "Update missing report" : "Mark as missing"}
+                </Link>
+              ) : null}
+              <Link href="/found" className="rounded-full border border-[var(--line)] bg-[rgba(255,255,255,0.8)] px-5 py-3 text-center text-sm font-bold uppercase tracking-[0.16em] text-[var(--foreground)] transition hover:bg-white">
+                Open found-bike desk
+              </Link>
             </div>
           </article>
+
+          <article className="card-surface rounded-[32px] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">Stored proof</p>
+            <div className="mt-4 space-y-4">
+              <div className="rounded-[22px] border border-[var(--line)] bg-[rgba(255,255,255,0.72)] p-4">
+                <p className="text-sm font-bold text-[var(--foreground)]">Receipt</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{passport.receiptReference || "No receipt note saved yet."}</p>
+              </div>
+              <div className="rounded-[22px] border border-[var(--line)] bg-[rgba(255,255,255,0.72)] p-4">
+                <p className="text-sm font-bold text-[var(--foreground)]">Photo summary</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{passport.photoSummary || "No photo summary saved yet."}</p>
+              </div>
+            </div>
+          </article>
+
+          <article className="card-surface rounded-[32px] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted-strong)]">Found-bike alerts</p>
+            {bikeNotifications.length ? (
+              <div className="mt-4 space-y-3">
+                {bikeNotifications.map((notification) => (
+                  <div key={notification.id} className="rounded-[22px] border border-[rgba(53,104,89,0.16)] bg-[rgba(53,104,89,0.08)] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-bold text-[var(--foreground)]">{notification.title}</p>
+                      <StatusPill label={notification.status} tone={notification.status === "Unread" ? "success" : "quiet"} />
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{notification.message}</p>
+                    <p className="mt-2 text-sm font-semibold text-[var(--foreground)]">{notification.reason}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
+                No found-bike alerts for this passport yet.
+              </p>
+            )}
+          </article>
         </aside>
-      </div>
+      </section>
     </div>
   );
 }

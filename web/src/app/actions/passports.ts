@@ -2,10 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { readStore, writeStore } from "@/lib/store";
+import { readBikes, requireCurrentUser, writeBikes } from "@/lib/store";
 
 function readText(formData: FormData, key: string) {
-  return String(formData.get(key) ?? "").trim();
+  return String(formData.get(key) ?? "")
+    .trim()
+    .replace(/[\r\n]+/g, " ");
 }
 
 function slugify(value: string) {
@@ -22,8 +24,7 @@ function pickHeroTone(make: string, model: string) {
 }
 
 export async function createBikePassport(formData: FormData) {
-  const ownerName = readText(formData, "ownerName");
-  const ownerEmail = readText(formData, "ownerEmail").toLowerCase();
+  const currentUser = await requireCurrentUser();
   const nickname = readText(formData, "nickname");
   const make = readText(formData, "make");
   const model = readText(formData, "model");
@@ -38,41 +39,25 @@ export async function createBikePassport(formData: FormData) {
   const commonParking = readText(formData, "commonParking");
   const note = readText(formData, "note");
 
-  if (!ownerName || !ownerEmail || !nickname || !make || !model || !color || !serialNumber || !lockType || !commonParking) {
+  if (!nickname || !make || !model || !color || !serialNumber || !lockType || !commonParking) {
     redirect("/bikes/new?error=missing-fields");
   }
 
-  const store = await readStore();
-  const now = new Date().toISOString();
-  const existingOwner = store.owners.find((owner) => owner.email === ownerEmail);
-  const ownerId = existingOwner?.id ?? `owner-${crypto.randomUUID()}`;
-
-  if (existingOwner) {
-    existingOwner.name = ownerName;
-    existingOwner.updatedAt = now;
-  } else {
-    store.owners.push({
-      id: ownerId,
-      name: ownerName,
-      email: ownerEmail,
-      createdAt: now,
-      updatedAt: now,
-    });
-  }
-
+  const bikes = await readBikes();
   const baseSlug = slugify(nickname);
   let slug = baseSlug;
   let suffix = 2;
 
-  while (store.passports.some((passport) => passport.slug === slug)) {
+  while (bikes.some((bike) => bike.slug === slug)) {
     slug = `${baseSlug}-${suffix}`;
     suffix += 1;
   }
 
-  store.passports.push({
-    id: `passport-${crypto.randomUUID()}`,
+  const now = new Date().toISOString();
+  bikes.push({
+    id: `bike-${crypto.randomUUID()}`,
     slug,
-    ownerId,
+    ownerId: currentUser.id,
     nickname,
     make,
     model,
@@ -81,22 +66,25 @@ export async function createBikePassport(formData: FormData) {
     serialNumber,
     lockType,
     commonParking,
-    purchaseDate: purchaseDate || null,
-    purchaseSource: purchaseSource || null,
-    receiptReference: receiptReference || null,
-    photoSummary: photoSummary || null,
+    purchaseDate,
+    purchaseSource,
+    receiptReference,
+    photoSummary,
     receiptStatus: receiptReference ? "Uploaded" : "Pending",
     status: "Protected",
+    lastSeen: "",
+    reportedAt: "",
     note: note || "No distinctive notes yet.",
     heroTone: pickHeroTone(make, model),
     createdAt: now,
     updatedAt: now,
   });
 
-  await writeStore(store);
+  await writeBikes(bikes);
 
   revalidatePath("/");
-  revalidatePath("/dashboard");
-  revalidatePath("/recovery");
+  revalidatePath("/sign-in");
+  revalidatePath("/bikes/new");
+  revalidatePath("/missing");
   redirect(`/bikes/${slug}`);
 }
