@@ -9,6 +9,10 @@ Build a UT-focused bike safety platform that combines:
 - campus incident visibility
 - recovered bike matching
 
+## Platform Scope
+
+Stage 1 is a responsive web app. We are not building native iOS or Android integrations in the first MVP. The web experience should still be mobile-friendly so students can use it from a phone browser.
+
 ## Problem We Are Actually Solving
 
 UT riders are afraid to bike because prevention, ownership verification, theft reporting, and recovery are fragmented across different systems. Students do not have one trusted place to:
@@ -181,14 +185,17 @@ UT students want to bike, but theft risk and poor recovery workflows make them f
 4. User alerts
 5. Incident map
 
+## Post-MVP Roadmap
+
+After the Stage 1 web MVP, the next major expansion is a dedicated mobile app for faster incident reporting, push notifications, camera-first bike passport capture, and optional hardware integrations.
+
 ## Current Git/GitHub Status
 
 - local git repo exists
-- no commits yet
-- no remote configured
+- GitHub remote configured at origin
+- main tracks origin/main
+- Stage 1 web MVP scaffold now lives in the web folder
 - GitHub CLI is not installed in this environment
 
-To connect this project to GitHub later, we will need either:
+To keep moving fast, we can edit locally, commit here, and push to the connected GitHub repository whenever we are ready.
 
-- a remote repository URL, or
-- GitHub CLI/auth set up on this machine
