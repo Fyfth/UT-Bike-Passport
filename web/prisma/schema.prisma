@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum BikePassportStatus {
+  PROTECTED
+  STOLEN
+  RECOVERED
+}
+
+enum ReceiptStatus {
+  PENDING
+  UPLOADED
+}
+
+enum HeroTone {
+  BURNT
+  SAGE
+  STEEL
+}
+
+enum MatchConfidence {
+  HIGH
+  MEDIUM
+  NEEDS_REVIEW
+}
+
+model Owner {
+  id        String         @id @default(cuid())
+  name      String
+  email     String         @unique
+  bikes     BikePassport[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model BikePassport {
+  id               String             @id @default(cuid())
+  slug             String             @unique
+  owner            Owner              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId          String
+  nickname         String
+  make             String
+  model            String
+  color            String
+  frameSize        String
+  serialNumber     String
+  lockType         String
+  commonParking    String
+  purchaseDate     String?
+  purchaseSource   String?
+  receiptReference String?
+  photoSummary     String?
+  receiptStatus    ReceiptStatus      @default(PENDING)
+  status           BikePassportStatus @default(PROTECTED)
+  lastSeen         String?
+  reportedAt       String?
+  note             String
+  heroTone         HeroTone           @default(BURNT)
+  matches          RecoveryMatch[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
+
+model RecoveredBike {
+  id         String          @id @default(cuid())
+  title      String
+  foundAt    String
+  zone       String
+  holdStatus String
+  note       String
+  matches    RecoveryMatch[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model RecoveryMatch {
+  id              String          @id @default(cuid())
+  confidence      MatchConfidence
+  reason          String
+  recoveredBike   RecoveredBike   @relation(fields: [recoveredBikeId], references: [id], onDelete: Cascade)
+  recoveredBikeId String
+  bikePassport    BikePassport    @relation(fields: [bikePassportId], references: [id], onDelete: Cascade)
+  bikePassportId  String
+  createdAt       DateTime        @default(now())
+
+  @@unique([recoveredBikeId, bikePassportId])
+}

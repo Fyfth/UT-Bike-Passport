@@ -1,0 +1,241 @@
+import { promises as fs } from "node:fs";
+import path from "node:path";
+
+export type PassportStatus = "Protected" | "Stolen" | "Recovered";
+export type ReceiptStatus = "Uploaded" | "Pending";
+export type HeroTone = "burnt" | "sage" | "steel";
+export type MatchConfidence = "High" | "Medium" | "Needs review";
+
+export type OwnerRecord = {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PassportRecord = {
+  id: string;
+  slug: string;
+  ownerId: string;
+  nickname: string;
+  make: string;
+  model: string;
+  color: string;
+  frameSize: string;
+  serialNumber: string;
+  lockType: string;
+  commonParking: string;
+  purchaseDate?: string | null;
+  purchaseSource?: string | null;
+  receiptReference?: string | null;
+  photoSummary?: string | null;
+  receiptStatus: ReceiptStatus;
+  status: PassportStatus;
+  lastSeen?: string | null;
+  reportedAt?: string | null;
+  note: string;
+  heroTone: HeroTone;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type RecoveredBikeRecord = {
+  id: string;
+  title: string;
+  foundAt: string;
+  zone: string;
+  holdStatus: string;
+  note: string;
+  matchCandidates: {
+    passportSlug: string;
+    confidence: MatchConfidence;
+    reason: string;
+  }[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AppStore = {
+  owners: OwnerRecord[];
+  passports: PassportRecord[];
+  recoveredBikes: RecoveredBikeRecord[];
+};
+
+const dataDirectory = path.join(process.cwd(), "data");
+const storePath = path.join(dataDirectory, "store.json");
+
+const seedStore: AppStore = {
+  owners: [
+    {
+      id: "owner-maya",
+      name: "Maya Chen",
+      email: "maya@utexas.edu",
+      createdAt: "2026-03-08T19:05:00.000Z",
+      updatedAt: "2026-03-08T19:05:00.000Z",
+    },
+    {
+      id: "owner-jordan",
+      name: "Jordan Alvarez",
+      email: "jordan@utexas.edu",
+      createdAt: "2026-03-05T18:25:00.000Z",
+      updatedAt: "2026-03-05T18:25:00.000Z",
+    },
+    {
+      id: "owner-priya",
+      name: "Priya Raman",
+      email: "priya@utexas.edu",
+      createdAt: "2026-02-27T21:12:00.000Z",
+      updatedAt: "2026-02-27T21:12:00.000Z",
+    },
+  ],
+  passports: [
+    {
+      id: "passport-burnt-commuter",
+      slug: "burnt-commuter",
+      ownerId: "owner-maya",
+      nickname: "Burnt Orange Commuter",
+      make: "Trek",
+      model: "FX 2 Disc",
+      color: "Burnt orange",
+      frameSize: "Medium",
+      serialNumber: "WTU2485MUT26",
+      lockType: "U-lock + braided cable",
+      commonParking: "PCL racks, Speedway Mall, Welch Hall",
+      purchaseDate: "August 2025",
+      purchaseSource: "Bicycle Sport Shop",
+      receiptReference: "Printed receipt uploaded during orientation week.",
+      photoSummary: "Three full-bike shots plus a close-up of the Longhorn bottle cage sticker.",
+      receiptStatus: "Uploaded",
+      status: "Stolen",
+      lastSeen: "March 8, 2026 at 6:20 PM",
+      reportedAt: "March 8, 2026 at 7:05 PM",
+      note: "Bottle cage has a small Longhorn sticker and a hidden QR ownership tag.",
+      heroTone: "burnt",
+      createdAt: "2026-03-08T19:05:00.000Z",
+      updatedAt: "2026-03-08T19:05:00.000Z",
+    },
+    {
+      id: "passport-midnight-fixie",
+      slug: "midnight-fixie",
+      ownerId: "owner-jordan",
+      nickname: "Midnight Fixie",
+      make: "State Bicycle Co.",
+      model: "4130 Single Speed",
+      color: "Matte black",
+      frameSize: "Large",
+      serialNumber: "SBC4130ATX92",
+      lockType: "Kryptonite New-U lock",
+      commonParking: "Jester racks, Greg Gym, East Campus Garage",
+      purchaseDate: "January 2026",
+      purchaseSource: "Facebook Marketplace",
+      receiptReference: "Bill of sale screenshot saved in account.",
+      photoSummary: "Two side profiles and a drivetrain close-up.",
+      receiptStatus: "Pending",
+      status: "Protected",
+      note: "Front wheel quick release replaced with security skewers.",
+      heroTone: "sage",
+      createdAt: "2026-03-05T18:25:00.000Z",
+      updatedAt: "2026-03-05T18:25:00.000Z",
+    },
+    {
+      id: "passport-silver-hauler",
+      slug: "silver-hauler",
+      ownerId: "owner-priya",
+      nickname: "Silver Hauler",
+      make: "Specialized",
+      model: "Sirrus X 3.0",
+      color: "Silver mist",
+      frameSize: "Small",
+      serialNumber: "WSBC604ATX18",
+      lockType: "Folding lock",
+      commonParking: "Student Activity Center, GDC, San Antonio Garage",
+      purchaseDate: "June 2024",
+      purchaseSource: "REI",
+      receiptReference: "Digital REI receipt linked in account.",
+      photoSummary: "Full-bike shot, rear rack close-up, and milk-crate mount detail.",
+      receiptStatus: "Uploaded",
+      status: "Recovered",
+      lastSeen: "February 27, 2026 at 3:45 PM",
+      reportedAt: "February 27, 2026 at 4:12 PM",
+      note: "Rear rack and milk-crate mount make this easy to identify.",
+      heroTone: "steel",
+      createdAt: "2026-02-27T21:12:00.000Z",
+      updatedAt: "2026-02-27T21:12:00.000Z",
+    },
+  ],
+  recoveredBikes: [
+    {
+      id: "recovered-101",
+      title: "Recovered commuter bike",
+      foundAt: "March 10, 2026",
+      zone: "San Antonio Garage",
+      holdStatus: "Awaiting owner response",
+      note: "Orange frame, city tires, bottle cage scuff marks.",
+      matchCandidates: [
+        {
+          passportSlug: "burnt-commuter",
+          confidence: "High",
+          reason: "Exact color profile, matching rack location history, and matching accessories.",
+        },
+      ],
+      createdAt: "2026-03-10T18:30:00.000Z",
+      updatedAt: "2026-03-10T18:30:00.000Z",
+    },
+    {
+      id: "recovered-102",
+      title: "Recovered silver hybrid",
+      foundAt: "March 7, 2026",
+      zone: "East Campus perimeter",
+      holdStatus: "Needs owner review",
+      note: "Rear rack installed, silver frame, front light mount missing.",
+      matchCandidates: [
+        {
+          passportSlug: "silver-hauler",
+          confidence: "Medium",
+          reason: "Strong visual overlap, but serial number not yet confirmed.",
+        },
+      ],
+      createdAt: "2026-03-07T17:00:00.000Z",
+      updatedAt: "2026-03-07T17:00:00.000Z",
+    },
+    {
+      id: "recovered-103",
+      title: "Recovered black single-speed",
+      foundAt: "March 5, 2026",
+      zone: "Dobie loading zone",
+      holdStatus: "No clean match yet",
+      note: "Matte black frame with security skewers and flat pedals.",
+      matchCandidates: [
+        {
+          passportSlug: "midnight-fixie",
+          confidence: "Needs review",
+          reason: "Wheel setup matches, but the stem and seatpost differ from the uploaded photos.",
+        },
+      ],
+      createdAt: "2026-03-05T15:40:00.000Z",
+      updatedAt: "2026-03-05T15:40:00.000Z",
+    },
+  ],
+};
+
+async function ensureStore() {
+  await fs.mkdir(dataDirectory, { recursive: true });
+
+  try {
+    await fs.access(storePath);
+  } catch {
+    await fs.writeFile(storePath, JSON.stringify(seedStore, null, 2), "utf8");
+  }
+}
+
+export async function readStore() {
+  await ensureStore();
+  const raw = await fs.readFile(storePath, "utf8");
+  return JSON.parse(raw) as AppStore;
+}
+
+export async function writeStore(store: AppStore) {
+  await ensureStore();
+  await fs.writeFile(storePath, JSON.stringify(store, null, 2), "utf8");
+}
